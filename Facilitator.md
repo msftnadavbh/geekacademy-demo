@@ -55,9 +55,9 @@ python3 python/processor.py
 **Show the output:**
 ```
 Processing complete!
-  Total Orders: 12
+  Total Orders: 15
   Successful:   0
-  Failed:       12
+  Failed:       15
 ```
 
 ---
@@ -161,13 +161,13 @@ python3 python/processor.py
 **Expected Output:**
 ```
 Processing complete!
-  Total Orders: 12
-  Successful:   10
+  Total Orders: 15
+  Successful:   13
   Failed:       2
 ```
 
 **Say:**
-> "We went from zero successful orders to ten! The remaining two failures are data issues, not code bugs."
+> "We went from zero successful orders to thirteen! The remaining two failures are data issues, not code bugs."
 
 ---
 
@@ -184,12 +184,12 @@ node node/processor.js
 ```
 Processing complete!
   Total Orders: 15
-  Successful:   8
-  Failed:       7
+  Successful:   9
+  Failed:       6
 ```
 
 **Say:**
-> "Interesting - different failure pattern! Python had zero successes, Node.js has eight. Let's ask Copilot why."
+> "Interesting - different failure pattern! Python had zero successes, Node.js has nine. Let's ask Copilot why."
 
 **Action:**
 1. Open `logs/node.log`
@@ -228,7 +228,7 @@ Anything suspicious about this order?
 ### Part 10: Data Bug Wrap-up (2 min) ⏱️ *Skip if short on time*
 
 **Action:**
-1. Remind audience of the Python results: 10/14 succeeded after the fix
+1. Remind audience of the Python results: 13/15 succeeded after the fix
 2. Ask:
 
 ```
@@ -338,8 +338,8 @@ git checkout -- python/processor.py node/processor.js
 
 ## 📊 Demo Metrics to Mention
 
-- **Log file size:** ~200 lines of mixed debug/info/error
-- **Hidden bugs:** 5 code bugs + 5 data issues
+- **Log file size:** ~350 lines of mixed debug/info/error
+- **Hidden bugs:** 6 code bugs + 6 data issues
 - **Time to debug manually:** 30-60 minutes (estimated)
 - **Time with Copilot:** 5-10 minutes
 

@@ -27,7 +27,7 @@ It's the **Holiday Rush** at Contoso Toyland! The order processing system is fai
 | Processor | Result | Main Bug |
 |-----------|--------|----------|
 | Python | 0/15 succeed | `None` causing TypeError |
-| Node.js | 8/15 succeed | Race condition on config load |
+| Node.js | 9/15 succeed | Race condition on config load |
 
 Use **GitHub Copilot** to analyze logs, find the bugs, and fix them.
 
