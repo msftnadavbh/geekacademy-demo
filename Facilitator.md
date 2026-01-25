@@ -275,11 +275,6 @@ Fix this function to never return None. Use a safe default value.
 Review this function for bugs including null references, edge cases, and race conditions
 ```
 
-### Generate Tests
-```
-Write pytest unit tests that would have caught this bug before production
-```
-
 ### Root Cause Report
 ```
 Generate a bug report for the engineering team with severity, root cause, and fix recommendations
@@ -338,7 +333,7 @@ git checkout -- python/processor.py node/processor.js
 | Part 8 (Node.js) | 3 min | Yes |
 | Part 9 (Suspicious Order) | 2 min | No - it's fun! |
 | Part 10 (Data Bugs) | 2 min | Yes |
-| **Buffer for next presenter** | 3-5 min | — |
+| **Buffer for next presenter** | 3-5 min | - |
 
 **Target:** Finish at 20 min to leave buffer before the next session.
 

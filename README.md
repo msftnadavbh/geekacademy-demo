@@ -121,15 +121,6 @@ Review this function for bugs. List every potential issue.
 
 ---
 
-### 🛠️ 6. Generate Tests
-
-**Prompt:**
-```
-Generate pytest tests that would catch: None returns, division by zero, and negative quantities
-```
-
----
-
 ## 🐛 Bug Reference (Facilitator Notes)
 
 ### Code Bugs
@@ -157,11 +148,11 @@ Generate pytest tests that would catch: None returns, division by zero, and nega
 
 ## 💡 Presenter Tips
 
-1. **Show the noise first** — Let audience see verbose logs before Copilot filters them
-2. **Use `@workspace`** — This connects logs to source code
-3. **Start broad, then specific** — "What's wrong?" → "Fix line 67"
-4. **Verify the fix** — Run `processor_fixed.py` to show 12/14 succeed
-5. **Highlight the debug logs** — Show how `tier_discount = None` makes the bug obvious
+1. **Show the noise first** - Let the audience see those verbose logs before Copilot filters them
+2. **Use `@workspace`** - This connects logs to source code
+3. **Start broad, then specific** - "What's wrong?" then "Fix line 67"
+4. **Verify the fix** - Run `processor_fixed.py` to show 12/14 succeed
+5. **Highlight the debug logs** - Show how `tier_discount = None` makes the bug obvious
 
 ---
 
@@ -171,8 +162,8 @@ Generate pytest tests that would catch: None returns, division by zero, and nega
 - `@workspace` lets Copilot search your entire codebase
 - Debug logs with `varName = value` format help Copilot (and humans) trace issues
 - Copilot distinguishes code bugs from data validation errors
-- Natural language prompts work — no special syntax needed
+- Natural language prompts work - no special syntax needed
 
 ---
 
-*Demo for GitHub Copilot debugging capabilities — January 2026*
+*Demo for GitHub Copilot debugging capabilities - January 2026*
