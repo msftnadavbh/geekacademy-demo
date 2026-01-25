@@ -282,6 +282,32 @@ Generate a bug report for the engineering team with severity, root cause, and fi
 
 ---
 
+## 🐛 Bug Reference
+
+### Code Bugs
+
+| File | Function | Bug | Log Indicator |
+|------|----------|-----|---------------|
+| `processor.py` | `get_discount_tier()` | Returns `None` for unknown categories | `tier_discount = None` |
+| `processor.py` | `apply_holiday_discount()` | No division-by-zero guard | `total = 0, order_id in cache = True` |
+| `processor.py` | `apply_holiday_discount()` | No discount cap | `discount_rate = 1.2` (>100%) |
+| `processor.js` | `loadDiscountConfig()` | Race condition - null on attempts 1-2 | `discountConfig = null`, `configLoadAttempts = 1` |
+| `processor.js` | `getBonusRate()` | No bounds check on `parts[1]` | `parts = ["MALFORMED"]` |
+| `processor.js` | `getLoyaltyBonus()` | Off-by-one: accesses `length` not `length-1` | `accessing index = 5` (undefined) |
+
+### Data Issues (orders.csv)
+
+| Order ID | Issue | Field Value |
+|----------|-------|-------------|
+| CT-1004 | Non-numeric price | `string_error` |
+| CT-1006 | Zero quantity | `0` |
+| CT-1008 | Negative quantity | `-1` |
+| CT-1011 | Malformed product ID | `MALFORMED` |
+| CT-1012 | Empty product ID | (empty) |
+| CT-1015 | Suspicious quantity | `9999` (Barry Broke) |
+
+---
+
 ## ⚠️ Troubleshooting
 
 | Issue | Solution |
