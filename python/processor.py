@@ -54,7 +54,10 @@ def get_discount_tier(product_name):
     }
     # BUG: product_name.lower() might not match any key - returns None then used in math
     category = product_name.lower().split()[0] if product_name else "unknown"
-    return tiers.get(category)  # Returns None if not found - causes TypeError later!
+    logger.debug(f"product_name = '{product_name}', extracted category = '{category}'")
+    result = tiers.get(category)  # Returns None if not found - causes TypeError later!
+    logger.debug(f"tiers.get('{category}') = {result}")
+    return result
 
 
 def apply_holiday_discount(total, order_id, product_name=None):
@@ -66,17 +69,23 @@ def apply_holiday_discount(total, order_id, product_name=None):
     
     # BUG 1: get_discount_tier can return None
     tier_discount = get_discount_tier(product_name)
+    logger.debug(f"tier_discount = {tier_discount}")  # Will show None for unknown categories!
     base_rate = 0.15
     
     # BUG 2: If tier_discount is None, this causes TypeError: unsupported operand type(s)
+    logger.debug(f"Attempting: discount_rate = {base_rate} + {tier_discount}")
     discount_rate = base_rate + tier_discount
     
     # BUG 3: Division by zero when total is 0
+    logger.debug(f"total = {total}, order_id in cache = {order_id in _discount_cache}")
     if order_id in _discount_cache:
         # Simulate cache hit ratio calculation
+        logger.debug(f"Attempting: cache_bonus = {_discount_cache[order_id]} / {total}")
         cache_bonus = _discount_cache[order_id] / total  # ZeroDivisionError if total=0
         discount_rate += cache_bonus
     
+    # BUG 4: No cap on discount_rate - could exceed 100% causing negative prices!
+    logger.debug(f"discount_rate = {discount_rate}")
     discount_amount = total * discount_rate
     final_price = total - discount_amount
     

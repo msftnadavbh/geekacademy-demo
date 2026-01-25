@@ -92,10 +92,10 @@ def apply_holiday_discount(total, order_id, product_name=None):
     base_rate = 0.15
     discount_rate = base_rate + tier_discount
     
-    # FIX 2: Check for zero total before division
-    if order_id in _discount_cache and total > 0:
-        cache_bonus = _discount_cache[order_id] / total
-        discount_rate += cache_bonus
+    # FIX 2: Flat 2% loyalty bonus for repeat orders (replaces nonsensical cache math)
+    if order_id in _discount_cache:
+        discount_rate += 0.02  # 2% loyalty bonus for returning customers
+        logger.debug(f"Loyalty bonus applied for repeat order {order_id}")
     
     # FIX 3: Cap discount at 50% to prevent negative prices
     discount_rate = min(discount_rate, 0.50)

@@ -1,225 +1,178 @@
 # 🧸 Contoso Toyland - Log Debugging Demo
 
-This demo showcases **GitHub Copilot's ability to analyze application logs** and help debug issues in a realistic "toy store" order processing system.
+A demo showcasing **GitHub Copilot's log-based debugging capabilities** using a "toy store" order processing system with intentional bugs.
 
 ## 📁 Project Structure
 
 ```
 contoso-toyland/
 ├── data/
-│   └── orders.csv          # Order data with hidden "poison" records
+│   └── orders.csv              # Order data with "poison" records
 ├── python/
-│   └── processor.py        # Python order processor
+│   ├── processor.py            # Buggy Python processor (demo)
+│   └── processor_fixed.py      # Fixed Python processor
 ├── node/
-│   └── processor.js        # Node.js order processor
-├── logs/
-│   ├── python.log          # Generated after running Python processor
-│   └── node.log            # Generated after running Node processor
+│   ├── processor.js            # Buggy Node.js processor (demo)
+│   └── processor_fixed.js      # Fixed Node.js processor
+├── logs/                       # Generated log files
+├── run-demo.sh                 # Run both processors
 └── README.md
 ```
 
 ## 🚀 Quick Start
 
-### Run the Python Processor
 ```bash
+# Run buggy Python processor (0/14 orders succeed)
 python3 python/processor.py
-```
 
-### Run the Node.js Processor
-```bash
+# Run buggy Node.js processor (8/14 orders succeed)
 node node/processor.js
-```
 
-### Run Both (Quick Setup)
-```bash
+# Run fixed versions (12/14 orders succeed)
+python3 python/processor_fixed.py
+node node/processor_fixed.js
+
+# Run all processors
 ./run-demo.sh
 ```
 
-Both processors will read from `data/orders.csv` and generate verbose logs in the `logs/` directory.
+Logs are generated in the `logs/` directory with verbose debug output.
 
 ---
 
-## 🎯 Demo Script
+## 🎯 Demo Scenario
 
-### The Scenario
-It's the **Holiday Rush** at Contoso Toyland! The order processing system is experiencing intermittent failures. Your job is to use **GitHub Copilot** to analyze the logs, find the bugs, and fix them.
+**The Situation:** It's the **Holiday Rush** at Contoso Toyland! The order processing system is failing. Use **GitHub Copilot** to analyze logs, find bugs, and fix them.
 
-### Hidden Issues in the Data
-The `orders.csv` file contains **3 problematic orders**:
-- **CT-1004**: Has `string_error` instead of a numeric price
-- **CT-1006**: Has `0` quantity (edge case)
-- **CT-1008**: Has `-1` quantity (negative value)
+### Bugs Overview
+
+| Type | Python | Node.js |
+|------|--------|---------|
+| **Code bugs** | `None` return causing TypeError | Race condition, array OOB, off-by-one |
+| **Data bugs** | Invalid price, negative qty | Malformed product IDs |
+| **Results** | 0/14 succeed | 8/14 succeed |
 
 ---
 
-## 📋 Copilot Demo Prompts
+## 📋 Demo Prompts
 
-### 🔍 Scenario 1: Analyze Logs (The "Needle in Haystack")
+### 🔍 1. Analyze Logs
 
-**Setup**: Run the processor, then open `logs/python.log` or `logs/node.log`
+**Setup:** Run `python3 python/processor.py`, open `logs/python.log`, select all (Ctrl+A)
 
-**Action**: Select the entire log file content (Ctrl+A)
-
-**Copilot Prompt**:
+**Prompt:**
 ```
 Analyze this log file. Summarize the errors and their root causes.
 ```
 
-**Expected Copilot Response**: Identifies the different error types:
-1. `TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'` - Code bug!
-2. `ValueError: could not convert string to float` - Data issue
-3. `Cannot read properties of undefined` - Null reference error
+**Expected:** Copilot identifies `TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'`
 
 ---
 
-### 🐛 Scenario 2: Debug a TypeError (Code Error!)
+### 🐛 2. Debug TypeError
 
-**Setup**: In `logs/python.log`, find and select the `TypeError` error block
+**Setup:** In logs, find and select the TypeError block
 
-**Action**: Highlight this specific error:
+**Prompt:**
 ```
-TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
-```
-
-**Copilot Prompt**:
-```
-@workspace This TypeError is crashing all orders. Find the line of code causing this and explain why it happens.
+@workspace This TypeError is crashing all orders. Find the line causing this and explain why.
 ```
 
-**Expected Copilot Response**: Points to `apply_holiday_discount()` function where `discount_rate = base_rate + tier_discount` fails because `get_discount_tier()` returns `None`.
+**Expected:** Points to `discount_rate = base_rate + tier_discount` where `tier_discount` is `None`
 
 ---
 
-### 🔧 Scenario 3: Fix the None Type Bug
+### 🔧 3. Fix the Bug
 
-**Setup**: Open `python/processor.py` and navigate to `get_discount_tier()` function
+**Setup:** Open `python/processor.py`, go to `get_discount_tier()` function
 
-**Copilot Prompt**:
+**Prompt:**
 ```
-Fix get_discount_tier to return a default value instead of None, and update apply_holiday_discount to handle edge cases safely.
+Fix get_discount_tier to return a default value instead of None
 ```
 
-**Expected Copilot Response**: Suggests adding `return tiers.get(category, 0.0)` or adding a None check.
+**Expected:** Suggests `return tiers.get(category, 0.0)`
 
 ---
 
-### 💥 Scenario 4: Debug Undefined Property Access (Node.js)
+### 💥 4. Debug Node.js Null Reference
 
-**Setup**: In `logs/node.log`, find the error:
-```
-Cannot read properties of undefined (reading 'toUpperCase')
-```
+**Setup:** Run `node node/processor.js`, check `logs/node.log` for first 2 orders
 
-**Copilot Prompt**:
+**Prompt:**
 ```
-@workspace Why does this error occur? Which line causes it and for which orders?
+@workspace Why do the first 2 orders always fail but later orders succeed?
 ```
 
-**Expected Copilot Response**: Identifies that `getBonusRate()` assumes `parts[1]` exists after splitting product_id.
+**Expected:** Identifies `discountConfig = null` race condition (loads on 3rd attempt)
 
 ---
 
-### 🎯 Scenario 5: Find All Bugs in a Function
+### 🎯 5. Find All Bugs
 
-**Setup**: Open `node/processor.js`, select the `applyHolidayDiscount` function
+**Setup:** Open `node/processor.js`, select `applyHolidayDiscount` function
 
-**Copilot Prompt**:
+**Prompt:**
 ```
-Review this function for bugs. List every potential issue including null references, race conditions, and edge cases.
+Review this function for bugs. List every potential issue.
 ```
 
-**Expected Copilot Response**: Identifies:
-1. `discountConfig` can be null (race condition)
-2. `getBonusRate` has array index out of bounds
-3. `getLoyaltyBonus` has off-by-one error
-4. No discount cap (could exceed 100%)
+**Expected:** Identifies: null config, array OOB in `getBonusRate`, off-by-one in `getLoyaltyBonus`, no discount cap
 
 ---
 
-### 🔄 Scenario 6: Compare Error Handling
+### 🛠️ 6. Generate Tests
 
-**Setup**: Open both `python/processor.py` and `node/processor.js`
-
-**Copilot Prompt**:
+**Prompt:**
 ```
-@workspace Compare how these two files handle the same bugs. Which implementation fails more gracefully?
+Generate pytest tests that would catch: None returns, division by zero, and negative quantities
 ```
 
 ---
 
-### 🛠️ Scenario 7: Generate Unit Tests
+## 🐛 Bug Reference (Facilitator Notes)
 
-**Setup**: Open `python/processor.py`
+### Code Bugs
 
-**Copilot Prompt**:
-```
-Generate pytest unit tests that would catch these bugs: None return values, empty strings, and zero values.
-```
+| File | Function | Bug | Log Indicator |
+|------|----------|-----|---------------|
+| `processor.py` | `get_discount_tier()` | Returns `None` for unknown categories | `tier_discount = None` |
+| `processor.py` | `apply_holiday_discount()` | No division-by-zero guard | `total = 0, order_id in cache = True` |
+| `processor.py` | `apply_holiday_discount()` | No discount cap | `discount_rate = 1.2` (>100%) |
+| `processor.js` | `loadDiscountConfig()` | Race condition - null on attempts 1-2 | `discountConfig = null`, `configLoadAttempts = 1` |
+| `processor.js` | `getBonusRate()` | No bounds check on `parts[1]` | `parts = ["MALFORMED"]` |
+| `processor.js` | `getLoyaltyBonus()` | Off-by-one: accesses `length` not `length-1` | `accessing index = 5` (undefined) |
 
----
+### Data Issues (orders.csv)
 
-### 📊 Scenario 8: Root Cause Analysis Report
-
-**Setup**: Select error logs from both Python and Node.js
-
-**Copilot Prompt**:
-```
-Generate a root cause analysis report categorizing bugs as:
-1. Code defects (logic errors)
-2. Data validation gaps  
-3. Missing null checks
-Include severity and fix priority.
-```
-
-**Copilot Prompt**:
-```
-Generate a bug report for the engineering team based on these errors. 
-Include severity, affected orders, and recommended fixes.
-```
+| Order ID | Issue | Field Value |
+|----------|-------|-------------|
+| CT-1004 | Non-numeric price | `string_error` |
+| CT-1006 | Zero quantity | `0` |
+| CT-1008 | Negative quantity | `-1` |
+| CT-1011 | Malformed product ID | `MALFORMED` |
+| CT-1012 | Empty product ID | `` |
 
 ---
 
-## 🎓 Key Takeaways for the Audience
+## 💡 Presenter Tips
 
-1. **Copilot can parse verbose logs** and extract meaningful insights
-2. **@workspace reference** lets Copilot search your entire codebase
-3. **Stack traces in logs** help Copilot pinpoint exact code locations
-4. **Copilot can compare** multiple implementations and suggest best practices
-5. **Natural language prompts** work - no special syntax needed
-6. **Code bugs vs Data bugs** - Copilot distinguishes between logic errors and bad input
-
----
-
-## 💡 Tips for Presenters
-
-- **Start with messy logs**: Show the "noise" before asking Copilot to filter
-- **Use incremental prompts**: Start broad ("what's wrong?") then get specific ("fix line 55")
-- **Show the fix working**: Re-run the processor after Copilot's fix to prove it works
-- **Highlight @workspace**: This is the magic that connects logs to code
-- **Show TypeError first**: Code bugs are more impressive than data validation errors
+1. **Show the noise first** — Let audience see verbose logs before Copilot filters them
+2. **Use `@workspace`** — This connects logs to source code
+3. **Start broad, then specific** — "What's wrong?" → "Fix line 67"
+4. **Verify the fix** — Run `processor_fixed.py` to show 12/14 succeed
+5. **Highlight the debug logs** — Show how `tier_discount = None` makes the bug obvious
 
 ---
 
-## 🐛 Intentional Bugs (Spoilers!)
+## 🎓 Key Takeaways
 
-### Code Bugs (Logic Errors)
-| File | Function | Bug | Error Type |
-|------|----------|-----|------------|
-| `processor.py` | `get_discount_tier()` | Returns `None` for unknown categories | `TypeError` |
-| `processor.py` | `apply_holiday_discount()` | Adds `None` to float | `TypeError` |
-| `processor.js` | `loadDiscountConfig()` | Race condition - config sometimes null | `TypeError` |
-| `processor.js` | `getBonusRate()` | Array index out of bounds | `TypeError` |
-| `processor.js` | `getLoyaltyBonus()` | Off-by-one error accessing array | `undefined` |
-
-### Data Bugs (CSV Issues)
-| File | Line | Bug | Effect |
-|------|------|-----|--------|
-| `orders.csv` | 5 | `string_error` as price | `ValueError` |
-| `orders.csv` | 7 | `0` quantity | Edge case (zero total) |
-| `orders.csv` | 9 | `-1` quantity | Validation error |
-| `orders.csv` | 12 | `MALFORMED` product ID | Missing array element |
-| `orders.csv` | 13 | Empty product ID | `undefined` access |
+- Copilot can parse verbose logs and extract actionable insights
+- `@workspace` lets Copilot search your entire codebase
+- Debug logs with `varName = value` format help Copilot (and humans) trace issues
+- Copilot distinguishes code bugs from data validation errors
+- Natural language prompts work — no special syntax needed
 
 ---
 
-*Demo created for GitHub Copilot capabilities showcase - January 2026*
+*Demo for GitHub Copilot debugging capabilities — January 2026*

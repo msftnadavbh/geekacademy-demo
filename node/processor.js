@@ -78,7 +78,9 @@ function loadDiscountConfig() {
  */
 function getBonusRate(productId) {
     const parts = productId.split('-');
+    log('DEBUG', `productId = '${productId}', parts = ${JSON.stringify(parts)}`);
     // BUG: Assumes parts[1] exists - crashes on malformed IDs
+    log('DEBUG', `Attempting to access parts[1]: ${parts[1]}`);
     const category = parts[1].toUpperCase();
     
     // BUG: Accessing property of potentially null discountConfig
@@ -96,7 +98,9 @@ function getLoyaltyBonus(orderId) {
     orderHistory.push(orderId);
     
     // BUG: Off-by-one - accesses index that doesn't exist yet
+    log('DEBUG', `orderHistory.length = ${orderHistory.length}, accessing index = ${orderHistory.length}`);
     const previousOrder = orderHistory[orderHistory.length];
+    log('DEBUG', `previousOrder = ${previousOrder}`);  // Will always be undefined!
     
     // BUG: Calling method on undefined
     if (previousOrder && previousOrder.startsWith('CT-100')) {
@@ -116,6 +120,8 @@ function applyHolidayDiscount(total, orderId, productId) {
     loadDiscountConfig();
     
     // BUG 1: discountConfig might be null here
+    log('DEBUG', `discountConfig = ${JSON.stringify(discountConfig)}`);
+    log('DEBUG', `configLoadAttempts = ${configLoadAttempts}`);
     let discountRate = discountConfig.baseRate;
     
     // BUG 2: getBonusRate has array index issues
@@ -125,6 +131,7 @@ function applyHolidayDiscount(total, orderId, productId) {
     discountRate += getLoyaltyBonus(orderId);
     
     // BUG 4: No cap check - discount could exceed 100%
+    log('DEBUG', `discountRate = ${discountRate}`);
     const discountAmount = total * discountRate;
     const finalPrice = total - discountAmount;
     

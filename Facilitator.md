@@ -23,7 +23,7 @@ A step-by-step guide for presenting the GitHub Copilot log debugging demo in VS 
 
 ---
 
-## 🚀 Demo Flow (15-20 minutes)
+## 🚀 Demo Flow (20-25 minutes)
 
 ### Part 1: Set the Scene (2 min)
 
@@ -171,18 +171,74 @@ Processing complete!
 
 ---
 
-### Part 8: Bonus - Compare Languages (Optional, 2 min)
+### Part 8: Node.js Speed Round (3 min) ⏱️ *Skip if short on time*
 
 **Action:**
-1. Open `node/processor.js` in a split view
-2. Ask:
+1. Run the Node.js processor:
 
+```bash
+node node/processor.js
 ```
-@workspace Compare the bug patterns in the Python and Node.js processors. Which has better error handling?
+
+**Show the output:**
+```
+Processing complete!
+  Total Orders: 15
+  Successful:   8
+  Failed:       7
 ```
 
 **Say:**
-> "Copilot can analyze multiple files and give us architectural insights."
+> "Interesting - different failure pattern! Python had zero successes, Node.js has eight. Let's ask Copilot why."
+
+**Action:**
+1. Open `logs/node.log`
+2. Select all (`Ctrl+A`)
+3. Ask:
+
+```
+Why do the first 2 orders always fail but later orders succeed?
+```
+
+**Expected Response:** Copilot identifies the race condition - `discountConfig` is `null` for the first 2 orders because it only loads on the 3rd attempt.
+
+**Say:**
+> "Same technique, different language, different bug. Copilot adapts to whatever codebase you're working in."
+
+---
+
+### Part 9: The Suspicious Order (2 min) 🎭
+
+**Action:**
+1. Open `data/orders.csv`
+2. Scroll to the last row (Barry Broke)
+3. Select that row and ask:
+
+```
+Anything suspicious about this order?
+```
+
+**Expected Response:** Copilot flags the order - 9999 items at $999.99 each = ~$10 million order, likely fraud or data entry error.
+
+**Say:**
+> "Copilot isn't just for code bugs - it can spot business logic issues too. This is the kind of order that would get flagged by a fraud detection system."
+
+---
+
+### Part 10: Data Bug Wrap-up (2 min) ⏱️ *Skip if short on time*
+
+**Action:**
+1. Remind audience of the Python results: 10/14 succeeded after the fix
+2. Ask:
+
+```
+Why are 2 orders still failing after the code fix?
+```
+
+**Expected Response:** Copilot identifies CSV data issues - CT-1004 has `string_error` as price, CT-1008 has negative quantity.
+
+**Say:**
+> "Copilot distinguishes between code bugs and bad data. The code is fixed - these are upstream data quality issues."
 
 ---
 
@@ -271,6 +327,29 @@ git checkout -- python/processor.py node/processor.js
 ## 🎬 Closing Statement
 
 > "GitHub Copilot isn't just for writing code - it's a debugging partner that can analyze logs, trace errors to source code, explain root causes, and suggest fixes. It turns hours of investigation into minutes."
+
+---
+
+## ⏱️ Timing Guide
+
+| Part | Duration | Skippable? |
+|------|----------|------------|
+| Parts 1-7 (Core Demo) | 15 min | No |
+| Part 8 (Node.js) | 3 min | Yes |
+| Part 9 (Suspicious Order) | 2 min | No - it's fun! |
+| Part 10 (Data Bugs) | 2 min | Yes |
+| **Buffer for next presenter** | 3-5 min | — |
+
+**Target:** Finish at 20 min to leave buffer before the next session.
+
+---
+
+## 🚨 Fallback Plan
+
+If Copilot is slow or unresponsive:
+1. Have screenshots of expected responses ready
+2. Say: "Copilot is thinking... while it works, let me show you what it typically returns"
+3. Show the screenshot and continue the narrative
 
 ---
 
