@@ -355,13 +355,13 @@ git checkout -- python/processor.py node/processor.js
 
 | Part | Duration | Skippable? |
 |------|----------|------------|
-| Parts 1-7 (Core Demo) | 15 min | No |
+| Parts 1-7 (Core Demo) | 18 min | No |
 | Part 8 (Node.js) | 3 min | Yes |
 | Part 9 (Suspicious Order) | 2 min | No - it's fun! |
 | Part 10 (Data Bugs) | 2 min | Yes |
 | **Buffer for next presenter** | 3-5 min | - |
 
-**Target:** Finish at 20 min to leave buffer before the next session.
+**Target:** Finish at 20-22 min to leave buffer before the next session.
 
 ---
 
