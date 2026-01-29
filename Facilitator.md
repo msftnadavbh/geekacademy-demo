@@ -68,7 +68,7 @@ Processing complete!
 
 ---
 
-### Part 3: The Messy Log File (3 min)
+### Part 3: The Messy Log File (2 min)
 
 **Action:**
 1. Open `logs/python.log` in the editor
@@ -76,59 +76,108 @@ Processing complete!
 3. Point out it's hard to find errors manually
 
 **Say:**
-> "This is a typical production log - lots of debug messages, timestamps, and buried somewhere in here are our errors. Let's ask Copilot to help."
-
-**Action:**
-1. Select all text (`Ctrl+A`)
-2. Open Copilot Chat (`Ctrl+Alt+I`)
-3. Type the prompt:
-
-```
-Analyze this log file. What errors are occurring and how many orders failed?
-```
-
-**Expected Response:** Copilot summarizes the errors, identifies `TypeError` as the main culprit.
+> "This is a typical production log - lots of debug messages, timestamps, and buried somewhere in here are our errors. Imagine hunting through this manually..."
 
 ---
 
-### Part 4: Find the Bug (4 min)
+### Part 4: One Prompt Investigation (5 min) 🎯
+
+**Say:**
+> "Instead of asking multiple questions, let's give Copilot one comprehensive prompt and watch it do the full detective work."
 
 **Action:**
-1. In the log file, find and select a `TypeError` error block:
-   ```
-   TypeError: unsupported operand type(s) for +: 'float' and 'NoneType'
-   ```
-2. With the text selected, type in Chat:
+1. Select all text in the log (`Ctrl+A`)
+2. Open Copilot Chat (`Ctrl+Alt+I`)
+3. Type this single prompt:
 
 ```
-@workspace Find the code that causes this error and explain why it happens
+@workspace Analyze this log, find the root cause of the failures in the codebase, and explain how to fix it
 ```
 
 **Say:**
-> "Notice I used `@workspace` - this tells Copilot to search my entire codebase, not just the current file."
+> "Notice `@workspace` - this tells Copilot to search my entire codebase, not just the log file. One prompt, full investigation."
 
-**Expected Response:** Copilot points to `processor.py`, specifically the `apply_holiday_discount()` function where `None` is added to a float.
+**Expected Response:** Copilot should:
+1. **Summarize** the log errors (15 failures, all TypeErrors)
+2. **Locate** the bug in `processor.py` (without us pointing to it!)
+3. **Trace** the root cause: `get_discount_tier()` returns `None` for unknown categories
+4. **Explain** the fix: add a default value
 
 **Action:** Click the file link in Copilot's response to jump to the code.
 
+**Say:**
+> "From a messy log to pinpointing the exact function — one prompt. Copilot traced the error through the call stack and found the root cause."
+
 ---
 
-### Part 5: Understand the Root Cause (2 min)
+### Part 5: Verify the Finding (3 min) 🔍
+
+**Say:**
+> "Before we fix anything, let's verify Copilot's analysis. Good developers don't blindly trust — they validate."
 
 **Action:**
-1. Now in `processor.py`, select the `get_discount_tier()` function
-2. Ask:
+1. You're now in `processor.py` (from clicking the link)
+2. Scroll to the `get_discount_tier()` function
+3. Select it and ask:
 
 ```
-Why does this function return None and how does that cause the TypeError?
+Walk me through this function. What happens when I pass a category that isn't in the dictionary?
+```
+
+**Expected Response:** Copilot explains that `dict.get()` returns `None` for missing keys, and this `None` propagates to cause the TypeError.
+
+**Action:**
+4. Now select the `apply_holiday_discount()` function
+5. Ask:
+
+```
+Show me the data flow - how does a None from get_discount_tier cause the TypeError here?
 ```
 
 **Say:**
-> "Copilot traces the bug back to its source - the dictionary lookup returns None when the product category isn't recognized."
+> "See how we're building understanding, not just getting answers. Copilot is our pair programmer explaining the code path."
+
+**Expected Response:** Copilot traces: `get_discount_tier()` returns `None` → passed to `apply_holiday_discount()` → line `discount_amount = base_price * discount + ...` fails because you can't multiply `None`.
 
 ---
 
-### Part 6: Autonomous Fix with Ralph Wiggum (3 min)
+### Part 6: What Else Could Break? (3 min) 🔮
+
+**Say:**
+> "We found one bug. But as senior developers, we don't stop there — we ask: what else could go wrong?"
+
+**Action:**
+1. Still in `processor.py`, ask:
+
+```
+@workspace What other edge cases or potential bugs exist in this order processing code?
+```
+
+**Expected Response:** Copilot proactively identifies:
+- Negative quantities (what if quantity is -5?)
+- Non-numeric prices (the CSV has `string_error` in one row)
+- Missing required fields
+- Zero price edge cases
+- Large quantities (potential overflow or fraud)
+
+**Say:**
+> "See how Copilot shifts from reactive debugging to proactive code review. We're not just fixing today's fire — we're preventing tomorrow's."
+
+**Action:**
+2. Point to one of the issues (e.g., negative quantity):
+
+```
+Show me where in the code this would cause a problem
+```
+
+**Expected Response:** Copilot traces the negative quantity path — it would result in a negative total, which might pass silently but corrupt business data.
+
+**Say:**
+> "This is the zero-to-hero journey: from 'fix this error' to 'harden this system'. Copilot grows with you."
+
+---
+
+### Part 7: Autonomous Fix with Ralph Wiggum (3 min)
 
 **Say:**
 > "Now here's where it gets interesting. Instead of guiding Copilot step by step, we'll use the Ralph Wiggum methodology — an autonomous loop that reads specs, implements fixes, and verifies acceptance criteria without hand-holding."
@@ -170,7 +219,7 @@ Show the spec file and PROMPT.md, explain the loop pattern, then use Copilot Cha
 
 ---
 
-### Part 7: Verify Acceptance Criteria (2 min)
+### Part 8: Verify Acceptance Criteria (2 min)
 
 **Action:** Run the processor again:
 
@@ -194,42 +243,6 @@ Processing complete!
 
 ---
 
-### Part 8: Node.js Speed Round (3 min) ⏱️ *Skip if short on time*
-
-**Action:**
-1. Run the Node.js processor:
-
-```bash
-node node/processor.js
-```
-
-**Show the output:**
-```
-Processing complete!
-  Total Orders: 15
-  Successful:   9
-  Failed:       6
-```
-
-**Say:**
-> "Interesting - different failure pattern! Python had zero successes, Node.js has nine. Let's ask Copilot why."
-
-**Action:**
-1. Open `logs/node.log`
-2. Select all (`Ctrl+A`)
-3. Ask:
-
-```
-Why do the first 2 orders always fail but later orders succeed?
-```
-
-**Expected Response:** Copilot identifies the race condition - `discountConfig` is `null` for the first 2 orders because it only loads on the 3rd attempt.
-
-**Say:**
-> "Same technique, different language, different bug. Copilot adapts to whatever codebase you're working in."
-
----
-
 ### Part 9: The Suspicious Order (2 min) 🎭
 
 **Action:**
@@ -248,45 +261,44 @@ Anything suspicious about this order?
 
 ---
 
-### Part 10: Data Bug Wrap-up (2 min) ⏱️ *Skip if short on time*
-
-**Action:**
-1. Remind audience of the Python results: 13/15 succeeded after the fix
-2. Ask:
-
-```
-Why are 2 orders still failing after the code fix?
-```
-
-**Expected Response:** Copilot identifies CSV data issues - CT-1004 has `string_error` as price, CT-1008 has negative quantity.
-
-**Say:**
-> "Copilot distinguishes between code bugs and bad data. The code is fixed - these are upstream data quality issues."
-
----
-
 ## 🎯 Key Talking Points
 
 | When | Say |
 |------|-----|
-| After log analysis | "Copilot understood the log format without any configuration" |
-| After @workspace | "The @workspace feature connects errors to source code across your entire project" |
+| After single prompt analysis | "One prompt: log analysis, code location, root cause, and fix — all in one response" |
+| After verification deep-dive | "We verified the finding by tracing the data flow. Copilot is a pair programmer, not a magic box" |
+| After edge case hunt | "From reactive debugging to proactive hardening — this is the zero-to-hero journey" |
 | After Ralph Wiggum fix | "We defined WHAT success looks like, not HOW to fix it — Copilot figured out the solution autonomously" |
 | After verify | "Acceptance criteria passed! This is spec-driven development: define done, let AI iterate" |
-| At the end | "This took us 5 minutes. Manually, this could have taken hours" |
+| After suspicious order | "Copilot isn't just for code — it spots business logic and data anomalies too" |
 
 ---
 
 ## 💬 Suggested Prompts (Copy-Paste Ready)
 
-### Log Analysis
+### Full Investigation (The One-Liner)
 ```
-Analyze this log file. What errors are occurring and how many orders failed?
+@workspace Analyze this log, find the root cause of the failures in the codebase, and explain how to fix it
 ```
 
-### Find Bug from Error
+### Verify the Finding (Function Walkthrough)
 ```
-@workspace Find the code that causes this error and explain why it happens
+Walk me through this function. What happens when I pass a category that isn't in the dictionary?
+```
+
+### Trace the Data Flow
+```
+Show me the data flow - how does a None from get_discount_tier cause the TypeError here?
+```
+
+### Edge Case Hunt (Proactive Review)
+```
+@workspace What other edge cases or potential bugs exist in this order processing code?
+```
+
+### Deep Dive on Edge Case
+```
+Show me where in the code this would cause a problem
 ```
 
 ### Fix Request (Ralph Wiggum Style)
