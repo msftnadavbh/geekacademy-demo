@@ -122,32 +122,43 @@ Why does this function return None and how does that cause the TypeError?
 
 ---
 
-### Part 6: Fix the Bug (3 min)
+### Part 6: Autonomous Fix with Ralph Wiggum (3 min)
+
+**Say:**
+> "Now here's where it gets interesting. Instead of telling Copilot exactly HOW to fix this, we'll use the Ralph Wiggum methodology — we define WHAT success looks like and let Copilot figure out the solution autonomously."
 
 **Action:**
 1. Keep cursor in the `get_discount_tier()` function
-2. Ask:
+2. Use this spec-driven prompt:
 
 ```
-Fix this function to never return None. Use a safe default value.
+Implement this spec:
+
+**Bug:** TypeError when processing orders with unknown product categories
+**Acceptance Criteria:** 
+- Orders with valid data process without TypeError
+- Unknown categories get a safe default discount (0%)
+- Running processor.py results in 13+ successful orders
+
+Fix the code to meet this spec. Output <promise>DONE</promise> when complete.
 ```
 
-**Expected Response:** Copilot suggests changing:
-```python
-return tiers.get(category)  # Bug
-```
-to:
-```python
-return tiers.get(category, 0.0)  # Fixed
-```
+**Expected Response:** Copilot autonomously:
+1. Identifies the root cause (`tiers.get(category)` returns `None`)
+2. Determines the fix (add default value `0.0`)
+3. May also fix related issues in `apply_holiday_discount()`
+4. Outputs `<promise>DONE</promise>` when criteria are met
+
+**Say:**
+> "Notice we didn't say 'add a default value' — Copilot figured that out from the acceptance criteria. This is spec-driven development: define done, let AI iterate."
 
 **Action:**
 1. Accept the fix (click "Apply" or copy-paste)
-2. Copilot may also suggest fixing `apply_holiday_discount()` - accept that too
+2. If Copilot suggests additional fixes, accept those too
 
 ---
 
-### Part 7: Verify the Fix (2 min)
+### Part 7: Verify Acceptance Criteria (2 min)
 
 **Action:** Run the processor again:
 
@@ -156,7 +167,7 @@ python3 python/processor.py
 ```
 
 **Say:**
-> "Let's see if our fix worked..."
+> "Now we verify that the acceptance criteria are met — remember, we asked for 13+ successful orders..."
 
 **Expected Output:**
 ```
@@ -167,7 +178,7 @@ Processing complete!
 ```
 
 **Say:**
-> "We went from zero successful orders to thirteen! The remaining two failures are data issues, not code bugs."
+> "13 successes — acceptance criteria passed! This is the Ralph Wiggum loop: define spec, let AI fix, verify criteria, done. The remaining two failures are data issues, not code bugs — which is exactly what our spec allowed for."
 
 ---
 
@@ -248,7 +259,8 @@ Why are 2 orders still failing after the code fix?
 |------|-----|
 | After log analysis | "Copilot understood the log format without any configuration" |
 | After @workspace | "The @workspace feature connects errors to source code across your entire project" |
-| After fix | "Copilot didn't just find the bug - it explained WHY it happened" |
+| After Ralph Wiggum fix | "We defined WHAT success looks like, not HOW to fix it — Copilot figured out the solution autonomously" |
+| After verify | "Acceptance criteria passed! This is spec-driven development: define done, let AI iterate" |
 | At the end | "This took us 5 minutes. Manually, this could have taken hours" |
 
 ---
@@ -265,9 +277,17 @@ Analyze this log file. What errors are occurring and how many orders failed?
 @workspace Find the code that causes this error and explain why it happens
 ```
 
-### Fix Request
+### Fix Request (Ralph Wiggum Style)
 ```
-Fix this function to never return None. Use a safe default value.
+Implement this spec:
+
+**Bug:** TypeError when processing orders with unknown product categories
+**Acceptance Criteria:** 
+- Orders with valid data process without TypeError
+- Unknown categories get a safe default discount (0%)
+- Running processor.py results in 13+ successful orders
+
+Fix the code to meet this spec. Output <promise>DONE</promise> when complete.
 ```
 
 ### Code Review
@@ -347,7 +367,9 @@ git checkout -- python/processor.py node/processor.js
 
 ## 🎬 Closing Statement
 
-> "GitHub Copilot isn't just for writing code - it's a debugging partner that can analyze logs, trace errors to source code, explain root causes, and suggest fixes. It turns hours of investigation into minutes."
+> "GitHub Copilot isn't just for writing code - it's a debugging partner that can analyze logs, trace errors to source code, explain root causes, and fix bugs autonomously when given clear acceptance criteria. Using spec-driven approaches like Ralph Wiggum, you can define WHAT success looks like and let AI figure out HOW to get there. It turns hours of investigation into minutes."
+
+**Resource:** For teams wanting to scale autonomous AI development, check out the Ralph Wiggum methodology: `https://github.com/fstandhartinger/ralph-wiggum`
 
 ---
 
