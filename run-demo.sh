@@ -21,7 +21,7 @@ echo "=================================="
 # Handle --reset flag
 if [ "$1" == "--reset" ]; then
     echo -e "${YELLOW}Resetting code to original (buggy) state...${NC}"
-    git checkout -- python/processor.py node/processor.js 2>/dev/null || true
+    git checkout -- python/processor.py 2>/dev/null || true
     echo -e "${GREEN}✓ Code reset complete${NC}"
     echo ""
 fi
@@ -38,15 +38,6 @@ else
     PYTHON_OK=false
 fi
 
-if command -v node &> /dev/null; then
-    NODE_VERSION=$(node --version 2>&1)
-    echo -e "  ${GREEN}✓${NC} Node.js: $NODE_VERSION"
-    NODE_OK=true
-else
-    echo -e "  ${RED}✗${NC} Node.js not found"
-    NODE_OK=false
-fi
-
 echo ""
 
 # Run Python processor
@@ -57,18 +48,6 @@ if [ "$PYTHON_OK" = true ]; then
         PYTHON_LINES=$(wc -l < logs/python.log)
         PYTHON_ERRORS=$(grep -c "ERROR\|CRITICAL" logs/python.log 2>/dev/null || echo "0")
         echo -e "  ${GREEN}✓${NC} Generated logs/python.log ($PYTHON_LINES lines, $PYTHON_ERRORS errors)"
-    fi
-    echo ""
-fi
-
-# Run Node.js processor
-if [ "$NODE_OK" = true ]; then
-    echo -e "${BLUE}Running Node.js processor...${NC}"
-    node node/processor.js
-    if [ -f "logs/node.log" ]; then
-        NODE_LINES=$(wc -l < logs/node.log)
-        NODE_ERRORS=$(grep -c "ERROR\|CRITICAL" logs/node.log 2>/dev/null || echo "0")
-        echo -e "  ${GREEN}✓${NC} Generated logs/node.log ($NODE_LINES lines, $NODE_ERRORS errors)"
     fi
     echo ""
 fi

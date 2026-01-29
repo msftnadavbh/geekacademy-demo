@@ -9,7 +9,6 @@ A step-by-step guide for presenting the GitHub Copilot log debugging demo in VS 
 ### Environment Setup
 - [ ] VS Code installed with **GitHub Copilot** and **GitHub Copilot Chat** extensions
 - [ ] Python 3.x installed (`python3 --version`)
-- [ ] Node.js installed (`node --version`)
 - [ ] Terminal accessible in VS Code (`` Ctrl+` ``)
 
 ### Files Ready
@@ -42,7 +41,6 @@ A step-by-step guide for presenting the GitHub Copilot log debugging demo in VS 
    ```
    📁 data/orders.csv
    📁 python/processor.py
-   📁 node/processor.js
    ```
 
 ---
@@ -335,9 +333,6 @@ Generate a bug report for the engineering team with severity, root cause, and fi
 | `processor.py` | `get_discount_tier()` | Returns `None` for unknown categories | `tier_discount = None` |
 | `processor.py` | `apply_holiday_discount()` | No division-by-zero guard | `total = 0, order_id in cache = True` |
 | `processor.py` | `apply_holiday_discount()` | No discount cap | `discount_rate = 1.2` (>100%) |
-| `processor.js` | `loadDiscountConfig()` | Race condition - null on attempts 1-2 | `discountConfig = null`, `configLoadAttempts = 1` |
-| `processor.js` | `getBonusRate()` | No bounds check on `parts[1]` | `parts = ["MALFORMED"]` |
-| `processor.js` | `getLoyaltyBonus()` | Off-by-one: accesses `length` not `length-1` | `accessing index = 5` (undefined) |
 
 ### Data Issues (orders.csv)
 
@@ -374,10 +369,9 @@ Generate a bug report for the engineering team with severity, root cause, and fi
 
 # Or manually:
 python3 python/processor.py
-node node/processor.js
 
 # To fully reset (undo code fixes):
-git checkout -- python/processor.py node/processor.js
+git checkout -- python/processor.py
 ```
 
 ---
@@ -403,10 +397,8 @@ git checkout -- python/processor.py node/processor.js
 
 | Part | Duration | Skippable? |
 |------|----------|------------|
-| Parts 1-7 (Core Demo) | 18 min | No |
-| Part 8 (Node.js) | 3 min | Yes |
+| Parts 1-8 (Core Demo) | 20 min | No |
 | Part 9 (Suspicious Order) | 2 min | No - it's fun! |
-| Part 10 (Data Bugs) | 2 min | Yes |
 | **Buffer for next presenter** | 3-5 min | - |
 
 **Target:** Finish at 20-22 min to leave buffer before the next session.
