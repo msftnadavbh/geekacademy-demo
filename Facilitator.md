@@ -17,6 +17,12 @@ A step-by-step guide for presenting the GitHub Copilot log debugging demo in VS 
 - [ ] Close all other VS Code windows (avoid distractions)
 - [ ] Hide any sensitive bookmarks or recent files
 
+### Ralph Wiggum Setup (Part 6)
+- [ ] GitHub Copilot CLI installed (`copilot --version`)
+- [ ] Spec file ready: `specs/001-fix-python-typeerror/spec.md`
+- [ ] Prompt file ready: `PROMPT.md`
+- [ ] Script executable: `./scripts/ralph.sh`
+
 ### Copilot Settings
 - [ ] Ensure Copilot is signed in and active (check status bar icon)
 - [ ] Open Copilot Chat panel (`Ctrl+Alt+I` or View → Chat)
@@ -125,36 +131,42 @@ Why does this function return None and how does that cause the TypeError?
 ### Part 6: Autonomous Fix with Ralph Wiggum (3 min)
 
 **Say:**
-> "Now here's where it gets interesting. Instead of telling Copilot exactly HOW to fix this, we'll use the Ralph Wiggum methodology — we define WHAT success looks like and let Copilot figure out the solution autonomously."
+> "Now here's where it gets interesting. Instead of guiding Copilot step by step, we'll use the Ralph Wiggum methodology — an autonomous loop that reads specs, implements fixes, and verifies acceptance criteria without hand-holding."
 
 **Action:**
-1. Keep cursor in the `get_discount_tier()` function
-2. Use this spec-driven prompt:
-
-```
-Implement this spec:
-
-**Bug:** TypeError when processing orders with unknown product categories
-**Acceptance Criteria:** 
-- Orders with valid data process without TypeError
-- Unknown categories get a safe default discount (0%)
-- Running processor.py results in 13+ successful orders
-
-Fix the code to meet this spec. Output <promise>DONE</promise> when complete.
-```
-
-**Expected Response:** Copilot autonomously:
-1. Identifies the root cause (`tiers.get(category)` returns `None`)
-2. Determines the fix (add default value `0.0`)
-3. May also fix related issues in `apply_holiday_discount()`
-4. Outputs `<promise>DONE</promise>` when criteria are met
+1. Show the spec file: open `specs/001-fix-python-typeerror/spec.md`
+2. Highlight the key sections:
+   - Acceptance criteria (13+ successful orders, no TypeError)
+   - The `<promise>DONE</promise>` completion signal
 
 **Say:**
-> "Notice we didn't say 'add a default value' — Copilot figured that out from the acceptance criteria. This is spec-driven development: define done, let AI iterate."
+> "This spec defines WHAT success looks like — not HOW to fix it. The AI figures out the solution and only signals 'done' when ALL criteria pass."
 
 **Action:**
-1. Accept the fix (click "Apply" or copy-paste)
-2. If Copilot suggests additional fixes, accept those too
+3. Show `PROMPT.md` — this tells the loop what to do
+4. Run the Ralph Wiggum loop in terminal:
+
+```bash
+./scripts/ralph.sh 3
+```
+
+**Say:**
+> "This kicks off the autonomous loop using GitHub Copilot CLI. Watch — it reads the spec, analyzes the code, implements the fix, verifies the criteria, and outputs the completion signal."
+
+**Expected Behavior:** The loop:
+1. Reads `PROMPT.md` which points to the spec
+2. Copilot CLI analyzes `python/processor.py`
+3. Identifies `get_discount_tier()` returns `None` for unknown categories
+4. Applies the fix (adds default value `0.0`)
+5. Verifies acceptance criteria are met
+6. Outputs `<promise>DONE</promise>`
+7. Loop detects the signal and exits with "SPEC COMPLETE!"
+
+**Say:**
+> "Notice it figured out the fix from the acceptance criteria alone. We didn't say 'add a default value' — the spec just said 'no TypeError, 13+ orders succeed'. This is spec-driven autonomous development."
+
+**Fallback (if Copilot CLI not installed):**
+Show the spec file and PROMPT.md, explain the loop pattern, then use Copilot Chat manually with: `@workspace Implement this spec [paste spec content]`
 
 ---
 
@@ -337,6 +349,8 @@ Generate a bug report for the engineering team with severity, root cause, and fi
 | Python not found | Use `python` instead of `python3` on Windows |
 | Logs not generated | Run processor first; check `logs/` folder exists |
 | Too many errors | This is intentional! Shows Copilot can handle noise |
+| Ralph loop not starting | Ensure Copilot CLI installed: `copilot --version` |
+| Ralph loop permission error | Run `chmod +x ./scripts/ralph.sh` |
 
 ---
 
