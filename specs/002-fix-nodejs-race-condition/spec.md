@@ -42,7 +42,7 @@ After the fix, valid orders should succeed from the start.
 
 | Metric | Before | After |
 |--------|--------|-------|
-| Successful Orders | 9 | 11+ |
+| Successful Orders | 9 | 13 |
 | First Order Config | null | valid object |
 | configLoadAttempts for Order 1 | 1 (fails) | 3+ (succeeds) OR config preloaded |
 
