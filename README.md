@@ -12,13 +12,11 @@ python3 python/processor.py
 
 # Run buggy Node.js processor
 node node/processor.js
-
-# Run fixed versions
-python3 python/processor_fixed.py
-node node/processor_fixed.js
 ```
 
 Logs are saved to `logs/`.
+
+Use **GitHub Copilot** to analyze the logs, identify bugs, and fix them!
 
 ## 🎯 The Scenario
 
