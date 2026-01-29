@@ -93,9 +93,9 @@ for ((i=1; i<=MAX_ITERATIONS; i++)); do
 
   # Run GitHub Copilot CLI in non-interactive mode:
   # -p / --prompt: execute prompt and exit
-  # -s / --silent: output only the agent response
-  # --allow-all: enables all permissions (tools, paths, urls)
-  result="$(copilot -p "$PROMPT_TEXT" -s --allow-all 2>&1)" || true
+  # --allow-all-tools: enables all tool permissions
+  # --allow-all-paths: allows file access anywhere
+  result="$(copilot -p "$PROMPT_TEXT" --allow-all-tools --allow-all-paths 2>&1)" || true
 
   # Print output for visibility
   echo "$result"
