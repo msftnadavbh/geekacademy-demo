@@ -32,3 +32,6 @@ Use **GitHub Copilot** to analyze logs, find the bugs, and fix them.
 | `python/processor.py` | Buggy Python processor |
 | `data/orders.csv` | Order data with edge cases |
 | `logs/` | Generated log output |
+| `.github/copilot-instructions.md` | Python coding conventions for Copilot |
+| `.github/copilot/agents/` | Custom Copilot agents (Ralph Wiggum) |
+| `.github/copilot/prompts/` | Reusable Copilot prompts |

@@ -21,6 +21,7 @@ A step-by-step guide for presenting the GitHub Copilot log debugging demo in VS 
 - [ ] Spec file ready: `specs/001-fix-python-typeerror/spec.md`
 - [ ] Prompt file ready: `PROMPT.md`
 - [ ] Script executable: `./scripts/ralph.sh`
+- [ ] Copilot customizations in `.github/copilot/` (agents + prompts)
 
 ### Copilot Settings
 - [ ] Ensure Copilot is signed in and active (check status bar icon)
@@ -194,8 +195,11 @@ Show me where in the code this would cause a problem
 4. Run the Ralph Wiggum loop in terminal:
 
 ```bash
-./scripts/ralph.sh 3
+./scripts/ralph.sh --plan 3
 ```
+
+**Say:**
+> "The `--plan` flag asks Copilot to analyze the spec and create an implementation plan first, then proceed to fix. This mimics how senior engineers think before they code."
 
 **Say:**
 > "This kicks off the autonomous loop using GitHub Copilot CLI. Watch — it reads the spec, analyzes the code, implements the fix, verifies the criteria, and outputs the completion signal."
@@ -259,6 +263,21 @@ Anything suspicious about this order?
 
 ---
 
+### Part 10: VS Code Copilot Chat Integration (Optional, 2 min)
+
+**Say:**
+> "For those who prefer VS Code's native Copilot Chat over the CLI, we've also set up custom agents and prompts following the awesome-copilot conventions."
+
+**Action:**
+1. Open Copilot Chat (`Ctrl+Alt+I`)
+2. Show the custom agent: type `@ralph-wiggum` and explain it's the spec-driven methodology agent
+3. Show the custom prompt: type `/fix-spec` and explain it runs the fix workflow
+
+**Say:**
+> "These customizations live in `.github/copilot/` and are automatically discovered by VS Code. The `copilot-instructions.md` file also sets Python coding conventions for all interactions."
+
+---
+
 ## 🎯 Key Talking Points
 
 | When | Say |
@@ -267,8 +286,10 @@ Anything suspicious about this order?
 | After verification deep-dive | "We verified the finding by tracing the data flow. Copilot is a pair programmer, not a magic box" |
 | After edge case hunt | "From reactive debugging to proactive hardening — this is the zero-to-hero journey" |
 | After Ralph Wiggum fix | "We defined WHAT success looks like, not HOW to fix it — Copilot figured out the solution autonomously" |
+| After --plan flag | "Planning before implementation — just like senior engineers do" |
 | After verify | "Acceptance criteria passed! This is spec-driven development: define done, let AI iterate" |
 | After suspicious order | "Copilot isn't just for code — it spots business logic and data anomalies too" |
+| After VS Code integration | "Custom agents and prompts follow awesome-copilot conventions — easy to share and extend" |
 
 ---
 
@@ -399,6 +420,7 @@ git checkout -- python/processor.py
 |------|----------|------------|
 | Parts 1-8 (Core Demo) | 20 min | No |
 | Part 9 (Suspicious Order) | 2 min | No - it's fun! |
+| Part 10 (VS Code Integration) | 2 min | Yes - if short on time |
 | **Buffer for next presenter** | 3-5 min | - |
 
 **Target:** Finish at 20-22 min to leave buffer before the next session.

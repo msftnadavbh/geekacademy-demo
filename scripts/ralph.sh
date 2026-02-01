@@ -6,8 +6,13 @@
 # to Copilot in non-interactive mode, until a completion signal is detected or
 # max iterations is reached.
 #
-# Usage: ./scripts/ralph.sh <max_iterations>
+# Usage: ./scripts/ralph.sh [--plan] <max_iterations>
 # Example: ./scripts/ralph.sh 5
+# Example: ./scripts/ralph.sh --plan 5
+#
+# Options:
+#   --plan    Run a planning step before the fix loop (asks Copilot to
+#             analyze the spec and output an implementation plan first)
 
 set -Eeuo pipefail
 
@@ -16,14 +21,35 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
+
+# Parse options
+PLAN_MODE=false
+while [[ "${1:-}" == -* ]]; do
+  case "$1" in
+    --plan)
+      PLAN_MODE=true
+      shift
+      ;;
+    *)
+      echo -e "${RED}Error: Unknown option: $1${NC}"
+      echo ""
+      echo "Usage: $0 [--plan] <max_iterations>"
+      echo "Example: $0 5"
+      echo "Example: $0 --plan 5"
+      exit 1
+      ;;
+  esac
+done
 
 # Check for required argument
 if [ "${1:-}" = "" ]; then
   echo -e "${RED}Error: Missing required argument${NC}"
   echo ""
-  echo "Usage: $0 <max_iterations>"
+  echo "Usage: $0 [--plan] <max_iterations>"
   echo "Example: $0 5"
+  echo "Example: $0 --plan 5"
   exit 1
 fi
 
@@ -50,25 +76,6 @@ if [ ! -f "PROMPT.md" ]; then
   exit 1
 fi
 
-# Create activity log if it doesn't exist
-if [ ! -f "activity.md" ]; then
-  echo -e "${YELLOW}Warning: activity.md not found, creating it...${NC}"
-  cat > activity.md << 'EOF'
-# Ralph Wiggum - Activity Log
-
-## Current Status
-**Last Updated:** Not started
-**Tasks Completed:** 0
-**Current Task:** None
-
----
-
-## Session Log
-
-<!-- Agent will append dated entries here -->
-EOF
-fi
-
 # Read prompt once per run
 PROMPT_TEXT="$(cat PROMPT.md)"
 
@@ -79,10 +86,44 @@ echo -e "${BLUE}======================================${NC}"
 echo ""
 echo -e "Max iterations: ${GREEN}$MAX_ITERATIONS${NC}"
 echo -e "Completion signal: ${GREEN}<promise>DONE</promise>${NC}"
+if [ "$PLAN_MODE" = true ]; then
+  echo -e "Plan mode: ${CYAN}enabled${NC}"
+fi
 echo ""
 echo -e "${YELLOW}Starting in 3 seconds... Press Ctrl+C to abort${NC}"
 sleep 3
 echo ""
+
+# Planning phase (optional)
+if [ "$PLAN_MODE" = true ]; then
+  echo -e "${CYAN}======================================${NC}"
+  echo -e "${CYAN}   Planning Phase${NC}"
+  echo -e "${CYAN}======================================${NC}"
+  echo ""
+
+  PLAN_PROMPT="Read the spec file at specs/001-fix-python-typeerror/spec.md and the relevant codebase.
+
+Create a brief implementation plan with:
+1. Root cause analysis (what is broken and why)
+2. Files that need to be modified
+3. Specific changes to make
+4. How to verify the fix works
+
+Output ONLY the plan, no code changes yet."
+
+  echo -e "${YELLOW}Asking Copilot to create implementation plan...${NC}"
+  echo ""
+
+  plan_result="$(copilot -p "$PLAN_PROMPT" --allow-all-tools --allow-all-paths 2>&1)" || true
+  echo "$plan_result"
+  echo ""
+
+  echo -e "${CYAN}--- Planning phase complete ---${NC}"
+  echo ""
+  echo -e "${YELLOW}Proceeding to implementation in 3 seconds...${NC}"
+  sleep 3
+  echo ""
+fi
 
 # Main loop
 for ((i=1; i<=MAX_ITERATIONS; i++)); do
@@ -112,8 +153,7 @@ for ((i=1; i<=MAX_ITERATIONS; i++)); do
     echo ""
     echo "Next steps:"
     echo "  1. Review the fix in your code"
-    echo "  2. Check activity.md for the build log"
-    echo "  3. Run the processor to verify the fix works"
+    echo "  2. Run the processor to verify the fix works"
     echo ""
     exit 0
   fi
@@ -134,8 +174,7 @@ echo -e "Reached max iterations (${RED}$MAX_ITERATIONS${NC}) without completion.
 echo ""
 echo "Options:"
 echo "  1. Run again with more iterations: ./scripts/ralph.sh 10"
-echo "  2. Check activity.md to see current progress"
-echo "  3. Check the spec file for acceptance criteria"
-echo "  4. Manually complete remaining tasks"
+echo "  2. Check the spec file for acceptance criteria"
+echo "  3. Manually complete remaining tasks"
 echo ""
 exit 1
