@@ -4,7 +4,6 @@
 The Python order processor (`python/processor.py`) fails with a `TypeError` when processing orders with unknown product categories. This causes 0/15 orders to succeed.
 
 **Priority:** HIGH
-**Independent:** Yes — can be completed without Spec 002
 
 ---
 
@@ -35,6 +34,14 @@ After the fix, orders with valid data must process successfully.
 - [ ] Output shows 13+ successful orders (some will still fail due to bad CSV data)
 - [ ] Log file shows successful processing for valid orders
 
+### FR-3: Clean Up Bug Markers
+After fixing bugs, update comments to reflect the fix.
+
+**Acceptance Criteria:**
+- [ ] Replace `BUG:` comments with `FIXED:` comments explaining what was fixed
+- [ ] Remove or update misleading comments that no longer apply
+- [ ] Keep the code well-documented for future maintainers
+
 ---
 
 ## Success Criteria
@@ -53,6 +60,7 @@ The agent MUST verify ALL before outputting completion:
 - [ ] `python3 python/processor.py` runs without crashing
 - [ ] Output shows `Successful: 13` or higher
 - [ ] `logs/python.log` contains no `TypeError` exceptions
+- [ ] No `BUG:` comments remain in `python/processor.py` (replaced with `FIXED:`)
 - [ ] Changes committed with descriptive message
 
 ---
