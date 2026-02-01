@@ -16,11 +16,11 @@ A step-by-step guide for presenting the GitHub Copilot log debugging demo in VS 
 - [ ] Close all other VS Code windows (avoid distractions)
 - [ ] Hide any sensitive bookmarks or recent files
 
-### Ralph Wiggum Setup (Part 6)
+### Ralph Wiggum Setup (Part 7)
 - [ ] GitHub Copilot CLI installed (`copilot --version`)
 - [ ] Spec file ready: `specs/001-fix-python-typeerror/spec.md`
 - [ ] Prompt file ready: `PROMPT.md`
-- [ ] Script executable: `./scripts/ralph.sh`
+- [ ] Script executable: `chmod +x ./scripts/ralph.sh`
 - [ ] Copilot customizations in `.github/copilot/` (agents + prompts)
 
 ### Copilot Settings
@@ -40,8 +40,10 @@ A step-by-step guide for presenting the GitHub Copilot log debugging demo in VS 
 1. Open VS Code in the demo folder
 2. Show the folder structure in Explorer:
    ```
+   📁 .github/copilot/     ← Custom agents & prompts
    📁 data/orders.csv
    📁 python/processor.py
+   📁 specs/               ← Bug specifications
    ```
 
 ---
@@ -199,10 +201,7 @@ Show me where in the code this would cause a problem
 ```
 
 **Say:**
-> "The `--plan` flag asks Copilot to analyze the spec and create an implementation plan first, then proceed to fix. This mimics how senior engineers think before they code."
-
-**Say:**
-> "This kicks off the autonomous loop using GitHub Copilot CLI. Watch — it reads the spec, analyzes the code, implements the fix, verifies the criteria, and outputs the completion signal."
+> "The `--plan` flag asks Copilot to analyze the spec and create an implementation plan first, then proceed to fix. This mimics how senior engineers think before they code. Watch — it reads the spec, analyzes the code, implements the fix, verifies the criteria, and outputs the completion signal."
 
 **Expected Behavior:** The loop:
 1. Reads `PROMPT.md` which points to the spec
