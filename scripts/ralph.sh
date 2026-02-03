@@ -112,13 +112,13 @@ Output ONLY the plan, no code changes yet."
   echo ""
 
   plan_result="$(copilot -p "$PLAN_PROMPT" --allow-all-tools --allow-all-paths 2>&1)" || true
-  echo "$plan_result"
+
+  # Save plan to file
+  echo "$plan_result" > plan.md
+  echo -e "${GREEN}Plan available in plan.md${NC}"
   echo ""
 
   echo -e "${CYAN}--- Planning phase complete ---${NC}"
-  echo ""
-  echo -e "${YELLOW}Proceeding to implementation in 3 seconds...${NC}"
-  sleep 3
   echo ""
 fi
 

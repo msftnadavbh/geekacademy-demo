@@ -1,6 +1,9 @@
 # Logs (regenerated on each run)
 logs/
 
+# Generated files
+plan.md
+
 # Python
 __pycache__/
 *.py[cod]
