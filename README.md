@@ -2,8 +2,6 @@
 
 A demo showcasing **GitHub Copilot's log-based debugging capabilities** using a "toy store" order processing system with intentional bugs.
 
-> 📖 **Presenting this demo?** See [Facilitator.md](Facilitator.md) for the full walkthrough.
-
 ## 🚀 Quick Start
 
 ```bash
