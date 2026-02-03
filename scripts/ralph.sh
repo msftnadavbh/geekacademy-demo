@@ -90,9 +90,6 @@ if [ "$PLAN_MODE" = true ]; then
   echo -e "Plan mode: ${CYAN}enabled${NC}"
 fi
 echo ""
-echo -e "${YELLOW}Starting in 3 seconds... Press Ctrl+C to abort${NC}"
-sleep 3
-echo ""
 
 # Planning phase (optional)
 if [ "$PLAN_MODE" = true ]; then
