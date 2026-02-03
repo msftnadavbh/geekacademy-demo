@@ -1,4 +1,4 @@
-# 🎤 Facilitator Guide: Contoso Toyland Demo
+# 🎤 Facilitator Guide: 404 Toys Demo
 
 A step-by-step guide for presenting the GitHub Copilot log debugging demo in VS Code.
 
@@ -34,7 +34,7 @@ A step-by-step guide for presenting the GitHub Copilot log debugging demo in VS 
 ### Part 1: Set the Scene (2 min)
 
 **Say:**
-> "Welcome to Contoso Toyland! It's the holiday rush, and our order processing system is failing. Customers are complaining, and we need to find the bugs fast. Let's see how GitHub Copilot can help us analyze logs and fix code."
+> "Welcome to 404 Toys! It's the holiday rush, and our order processing system is failing. Customers are complaining, and we need to find the bugs fast. Let's see how GitHub Copilot can help us analyze logs and fix code."
 
 **Action:**
 1. Open VS Code in the demo folder

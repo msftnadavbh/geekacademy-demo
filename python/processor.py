@@ -1,5 +1,5 @@
 """
-Contoso Toyland - Order Processor (Python)
+404 Toys - Order Processor (Python)
 Processes orders from the data/orders.csv file and logs results.
 """
 import csv
@@ -175,12 +175,12 @@ def main():
     csv_path = os.path.join(script_dir, '..', 'data', 'orders.csv')
     
     print("=" * 60)
-    print("  CONTOSO TOYLAND - Order Processing System (Python)")
+    print("  404 TOYS - Order Processing System (Python)")
     print("  Holiday Rush Batch Processor v2.1")
     print("=" * 60)
     
     logger.info("=" * 60)
-    logger.info("CONTOSO TOYLAND ORDER PROCESSOR STARTED")
+    logger.info("404 TOYS ORDER PROCESSOR STARTED")
     logger.info(f"Processing file: {csv_path}")
     logger.info("=" * 60)
     

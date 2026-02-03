@@ -22,7 +22,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo ""
-echo -e "${BLUE}🔄 Contoso Toyland - Demo Reset${NC}"
+echo -e "${BLUE}🔄 404 Toys - Demo Reset${NC}"
 echo "=================================="
 echo ""
 

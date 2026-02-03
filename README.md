@@ -1,4 +1,4 @@
-# 🧸 Contoso Toyland - Log Debugging Demo
+# 🧸 404 Toys - Log Debugging Demo
 
 A demo showcasing **GitHub Copilot's log-based debugging capabilities** using a "toy store" order processing system with intentional bugs.
 
@@ -17,7 +17,7 @@ Use **GitHub Copilot** to analyze the logs, identify bugs, and fix them!
 
 ## 🎯 The Scenario
 
-It's the **Holiday Rush** at Contoso Toyland! The order processing system is failing:
+It's the **Holiday Rush** at 404 Toys! The order processing system is failing:
 
 | Processor | Result | Main Bug |
 |-----------|--------|----------|
