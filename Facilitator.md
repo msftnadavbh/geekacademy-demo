@@ -201,16 +201,17 @@ Show me where in the code this would cause a problem
 ```
 
 **Say:**
-> "The `--plan` flag asks Copilot to analyze the spec and create an implementation plan first, then proceed to fix. This mimics how senior engineers think before they code. Watch — it reads the spec, analyzes the code, implements the fix, verifies the criteria, and outputs the completion signal."
+> "The `--plan` flag asks Copilot to analyze the spec and create an implementation plan first, then saves it to `plan.md` before proceeding to fix. This keeps the terminal clean while preserving the plan for review. This mimics how senior engineers think before they code. Watch — it reads the spec, analyzes the code, saves the plan, implements the fix, verifies the criteria, and outputs the completion signal."
 
 **Expected Behavior:** The loop:
 1. Reads `PROMPT.md` which points to the spec
 2. Copilot CLI analyzes `python/processor.py`
-3. Identifies `get_discount_tier()` returns `None` for unknown categories
-4. Applies the fix (adds default value `0.0`)
-5. Verifies acceptance criteria are met
-6. Outputs `<promise>DONE</promise>`
-7. Loop detects the signal and exits with "SPEC COMPLETE!"
+3. Creates an implementation plan and saves it to `plan.md`
+4. Identifies `get_discount_tier()` returns `None` for unknown categories
+5. Applies the fix (adds default value `0.0`)
+6. Verifies acceptance criteria are met
+7. Outputs `<promise>DONE</promise>`
+8. Loop detects the signal and exits with "SPEC COMPLETE!"
 
 **Say:**
 > "Notice it figured out the fix from the acceptance criteria alone. We didn't say 'add a default value' — the spec just said 'no TypeError, 13+ orders succeed'. This is spec-driven autonomous development."
@@ -285,7 +286,7 @@ Anything suspicious about this order?
 | After verification deep-dive | "We verified the finding by tracing the data flow. Copilot is a pair programmer, not a magic box" |
 | After edge case hunt | "From reactive debugging to proactive hardening — this is the zero-to-hero journey" |
 | After Ralph Wiggum fix | "We defined WHAT success looks like, not HOW to fix it — Copilot figured out the solution autonomously" |
-| After --plan flag | "Planning before implementation — just like senior engineers do" |
+| After --plan flag | "Planning before implementation — the plan is saved to plan.md for review, keeping the terminal clean" |
 | After verify | "Acceptance criteria passed! This is spec-driven development: define done, let AI iterate" |
 | After suspicious order | "Copilot isn't just for code — it spots business logic and data anomalies too" |
 | After VS Code integration | "Custom agents and prompts follow awesome-copilot conventions — easy to share and extend" |
